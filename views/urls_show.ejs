@@ -11,6 +11,14 @@
 <body style="font-size:20px; padding:50px;">
 
   Url: <b><%= templateVars.longURL %> </b> and it's short form: <b> <%= templateVars.shortURL %> <b/>
+  <form class="form-inline" action=<%="/urls/" + templateVars.shortURL %> method="POST">
+    <div class="form-group mb-2">
+      <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
+      <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+  </form>
+
+
   <br/>
   <a href="#"> shorten your URL here <a/>
 
