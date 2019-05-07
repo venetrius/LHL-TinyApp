@@ -18,12 +18,27 @@
   A list of the URLs and their shortened forms
   <ul>
     <% for(let url in  templateVars.urls ){%>
-     <li> <%= templateVars.urls[url] %> : <%= url %> </li>
+      <li>
+        <div class="row row-container">
+        <div class="col-3">
+        <%= url %> ->
+        <a href= <%= templateVars.urls[url] %> >
+          <%= templateVars.urls[url] %>
+        </a>
+      </div>
+      <div class="col-1">
+        <form method="POST" action=<%="/urls/"+ url +"/delete"%>>
+          <button class="btn btn-primary" name="shortURL" >Delete</button>
+        </form>
+        </div>
+        <div class="row row-container">
+
+      </li>
     <% } %>
   </ul>
   <br/>
 
-  <a href="#"> shorten your URL here <a/>
+  <a href="#"> shorten your URL here </a>
 
 </body>
 </html>
