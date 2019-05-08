@@ -43,6 +43,10 @@ const getUserByEmail = function(email){
   return null;
 }
 
+const isValidUser = function(userid){
+  return ( userid && users[userid]);
+}
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -79,10 +83,14 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = {
-    user: users[req.cookies.user_id]
-  };
-  res.render("urls_new", templateVars);
+  if(! isValidUser(req.cookies.user_id)){
+    res.redirect("/urls");
+  }else{
+    const templateVars = {
+      user: users[req.cookies.user_id]
+    };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -137,7 +145,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/urls/:shortURL", (req, res) => {
-  console.log(req.body);
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect("/urls");
 });
