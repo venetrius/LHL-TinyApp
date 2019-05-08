@@ -31,17 +31,25 @@ let users = {
 }
 
 const isEmailExist = function(email){
+  return getUserByEmail(email);
+}
+
+const getUserByEmail = function(email){
   for(let user in users){
     if( users[user].email===email){
-      return true;
+      return users[user];
     }
   }
-  return false;
+  return null;
 }
 
 
 app.get("/", (req, res) => {
   res.send("Hello!");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
 });
 
 app.get("/register", (req, res) => {
@@ -86,8 +94,13 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.body.username);
-  res.redirect("/urls");
+  let user = getUserByEmail(req.body.email);
+  if(user && user.password === req.body.password){
+    res.cookie("user_id", user.id);
+    res.redirect("/urls");
+  }else{
+    res.redirect("/login");
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -103,7 +116,7 @@ app.post("/register", (req,res) => {
   };
   if(!newUser.email || !newUser.password || isEmailExist(newUser.email)){
     res.status(400);
-    res.send('Email or password is not valid');
+    res.send('E-mail or password is not valid, or E-mail is already registrated');
   }else{
     users[newUser.id] = newUser;
     res.cookie("user_id", newUser.id);
