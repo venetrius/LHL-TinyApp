@@ -99,7 +99,8 @@ app.post("/login", (req, res) => {
     res.cookie("user_id", user.id);
     res.redirect("/urls");
   }else{
-    res.redirect("/login");
+    res.status(400);
+    res.send("Username or password is not correct");
   }
 });
 
