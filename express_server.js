@@ -6,7 +6,7 @@ const morgan = require("morgan");
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 
 let urlDatabase = {
