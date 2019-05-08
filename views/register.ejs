@@ -9,12 +9,14 @@
   </head>
 
   <body style="font-size:20px; padding:50px;">
-    <h1> <b>TinyApp </b></h1>
+    <%include partials/_header%>
+    <h2><b>Register</b> </h2>
     <form method="POST" action="/register">
-      <input type="email" name="email" placeholder="**@**.**"/>
-      <input type="password" name="password" placeholder="password" />
-      <button type="submit" > Hello there </button>
+      Email: <input type="email" name="email" placeholder="**@**.**"/>
+      <br/>
+      Password: <input type="password" name="password" placeholder="password" />
+      <br/>
+      <button type="submit" class="btn btn-primary"> Register </button>
     </form>
-
   </body>
 </html>

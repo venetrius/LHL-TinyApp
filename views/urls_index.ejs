@@ -10,33 +10,15 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header %>
-  <!-- simple example, trying out ejs
-    <%= urls.b2xVn2 %>
-    <% for(let i = 0; i  < 10; i++){%>
-    <br/> <%= i %>
-    <% } %> -->
-
-  A list of the URLs and their shortened forms
+  <h2> List of the stored URLs </h2>
   <ul>
     <% for(let url in  urls ){%>
       <li>
-        <div class="row row-container">
-        <div class="col-3">
         <%= url %> ->
-        <a href= <%= urls[url] %> >
-          <%= urls[url] %>
-        </a>
-      </div>
-      <div class="col-1">
-        <a href=<%= "/urls/" + url %> class="btn btn-primary" name="shortURL" >Edit</a>
-      </div>
-      <div class="col-1">
-        <form method="POST" action=<%="/urls/"+ url +"/delete"%>>
-          <button class="btn btn-primary" name="shortURL" >Delete</button>
-        </form>
-        </div>
-        <div class="row row-container">
-
+        <a href="<%=urls[url]%>" > <%= urls[url] %> </a>
+        <a href= "/urls/<%=url%>" class="btn btn-primary" name="shortURL" >Edit</a>
+        <a href= "/urls/<%=url%>/delete" class="btn btn-primary" name="shortURL" >Delete</a>
+        <br/>
       </li>
     <% } %>
   </ul>

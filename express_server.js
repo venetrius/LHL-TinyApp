@@ -49,11 +49,17 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  const templateVars = {
+    user: users[req.cookies.user_id]
+  };
+  res.render("login",templateVars);
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  const templateVars = {
+    user: users[req.cookies.user_id]
+  };
+  res.render("register",templateVars);
 });
 
 app.get("/urls.json", (req, res) => {

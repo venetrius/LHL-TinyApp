@@ -1,10 +1,10 @@
  <h1> <b>TinyApp </b></h1>
 <%if (!user) { %>
-  <a href="/register"> Register </a> || <a href="/login"> Login </a>
+  <a href="/register"> Register </a> | <a href="/login"> Login </a>
 <% } %>
 <%if (user) { %>
+    Logged in As: <b><%= user.email %><b>
     <form  action="/logout" method="POST" class="form-inline">
-       <b><%= user.email %><b> &nbsp;&nbsp;
       <button class="btn btn-primary" type="submit"> LogOut </button>
     </form>
 <% } %>
