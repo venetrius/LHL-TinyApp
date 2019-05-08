@@ -11,20 +11,20 @@
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header %>
   <!-- simple example, trying out ejs
-    <%= templateVars.urls.b2xVn2 %>
+    <%= urls.b2xVn2 %>
     <% for(let i = 0; i  < 10; i++){%>
     <br/> <%= i %>
     <% } %> -->
 
   A list of the URLs and their shortened forms
   <ul>
-    <% for(let url in  templateVars.urls ){%>
+    <% for(let url in  urls ){%>
       <li>
         <div class="row row-container">
         <div class="col-3">
         <%= url %> ->
-        <a href= <%= templateVars.urls[url] %> >
-          <%= templateVars.urls[url] %>
+        <a href= <%= urls[url] %> >
+          <%= urls[url] %>
         </a>
       </div>
       <div class="col-1">
