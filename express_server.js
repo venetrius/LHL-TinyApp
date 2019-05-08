@@ -17,6 +17,20 @@ let urlDatabase = {
 
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -34,7 +48,6 @@ app.get("/urls", (req, res) => {
     urls: urlDatabase,
     username: req.cookies.username
   };
-  console.log(req.cookies);
   res.render("urls_index", templateVars);
 });
 
@@ -70,6 +83,17 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
+  res.redirect("/urls");
+});
+
+app.post("/register", (req,res) => {
+  let newUserID = generateRandomString();
+  users[newUserID] = {
+    id : newUserID,
+    email : req.body.email,
+    password : req.body.password
+  };
+  res.cookie("username", newUserID);
   res.redirect("/urls");
 });
 
