@@ -2,13 +2,22 @@
   <div class="col-4">
     <h1> <b>TINY XML </b></h1>
   </div>
+  <%if (!templateVars.username) { %>
   <div class="col" >
     <form style="float:right;" action="/login" method="POST" class="form-inline">
       <input name="username" placeholder="username"> </input>
       <button class="btn btn-primary" type="submit"> Login </button>
     </form>
   </div>
-  Logged in as <%= templateVars.username %>
+  <% } %>
+  <%if (templateVars.username && templateVars.username.length > 0) { %>
+    <div class="col" >
+      <form  action="/logout" method="POST" class="form-inline" style="float:right;">
+        <label> Loged in as&nbsp; <b><%= templateVars.username %><b> &nbsp;&nbsp;
+        <button class="btn btn-primary" type="submit"> LogOut </button>
+      </form>
+    </div>
+  <% } %>
 </div>
 <br/>
 <br/>
