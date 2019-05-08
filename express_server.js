@@ -17,7 +17,7 @@ let urlDatabase = {
 
 };
 
-const users = {
+let users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
@@ -28,6 +28,15 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk"
   }
+}
+
+const isEmailExist = function(email){
+  for(let user in users){
+    if( users[user].email===email){
+      return true;
+    }
+  }
+  return false;
 }
 
 
@@ -87,14 +96,19 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req,res) => {
-  let newUserID = generateRandomString();
-  users[newUserID] = {
-    id : newUserID,
+  let newUser = {
+    id : generateRandomString(),
     email : req.body.email,
     password : req.body.password
   };
-  res.cookie("username", newUserID);
-  res.redirect("/urls");
+  if(!newUser.email || !newUser.password || isEmailExist(newUser.email)){
+    res.status(400);
+    res.send('Email or password is not valid');
+  }else{
+    users[newUser.id] = newUser;
+    res.cookie("username", newUserID);
+    res.redirect("/urls");
+  }
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
