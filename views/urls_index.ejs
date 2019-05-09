@@ -14,10 +14,13 @@
   <ul>
     <% for(let url in  urls ){%>
       <li>
+
         <%= url %> ->
         <a href="<%=urls[url]%>" > <%= urls[url] %> </a>
         <a href= "/urls/<%=url%>" class="btn btn-primary" name="shortURL" >Edit</a>
-        <a href= "/urls/<%=url%>/delete" class="btn btn-primary" name="shortURL" >Delete</a>
+        <form style="display: inline;" action="/urls/<%=url%>/delete" method="POST">
+          <button type="submit" class="btn btn-primary">Delete</button>
+        </form>
         <br/>
       </li>
     <% } %>
