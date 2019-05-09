@@ -2,6 +2,7 @@
 /*jslint es6 */
 "use strict";
 const express = require("express");
+const methodOverride = require('method-override');
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
@@ -9,6 +10,7 @@ const cookieSession = require('cookie-session');
 const morgan = require("morgan");
 const bcrypt = require('bcrypt');
 
+app.use(methodOverride('_method'));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
@@ -209,7 +211,7 @@ app.post("/register", (req,res) => {      //  reviewed
   }
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {//  reviewed
+app.delete("/urls/:shortURL", (req, res) => {//  reviewed
   if( ! users[req.session.user_id]){
     res.status = 401;
     res.send(AUTHENTICATION_ERROR);
@@ -222,7 +224,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {//  reviewed
   }
 });
 
-app.post("/urls/:shortURL", (req, res) => { //  reviewed
+app.put("/urls/:shortURL", (req, res) => { //  reviewed
+  console.log("I am calling PUT now");
   if( ! users[req.session.user_id]){
     res.status = 401;
     res.send(AUTHENTICATION_ERROR);

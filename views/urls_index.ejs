@@ -18,7 +18,7 @@
         <%= url %> ->
         <a href="<%=urls[url]%>" > <%= urls[url] %> </a>
         <a href= "/urls/<%=url%>" class="btn btn-primary" name="shortURL" >Edit</a>
-        <form style="display: inline;" action="/urls/<%=url%>/delete" method="POST">
+        <form style="display: inline;" action="/urls/<%=url%>/?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-primary">Delete</button>
         </form>
         <br/>
