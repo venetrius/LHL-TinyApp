@@ -14,7 +14,8 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }));
 
-const AUTHENTICATION_ERROR = '<body><h1> 401 Unauthorized Error </h1></body>'
+const AUTHENTICATION_ERROR = '<body><h1> 401 Authorization required </h1></body>';
+const AUTHORIZATION_ERROR = '<body><h1> Error 403: </h1> The server understood the request, but is refusing to fulfil it. Authorization will not help and the request SHOULD NOT be repeated. </body>';
 
 let urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
@@ -117,7 +118,7 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-app.get("/urls/new", (req, res) => {
+app.get("/urls/new", (req, res) => {        // reviewed
   if(! isValidUser(req.session.user_id)){
     res.redirect("/login");
   }else{
@@ -128,19 +129,22 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
-app.get("/urls/:shortURL", (req, res) => {
+app.get("/urls/:shortURL", (req, res) => {  // reviewed
   let user = users[req.session.user_id];
   let url = urlDatabase[req.params.shortURL];
-  if(user && url && user.id === url.userID){
+  if(! user){
+    res.status = 401;
+    res.send(AUTHENTICATION_ERROR);
+  }else if( ! url || user.id !== url.userID){
+    res.status = 403;
+    res.send(AUTHORIZATION_ERROR);
+  }else{
     const templateVars = {
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
       user: users[req.session.user_id]
     };
     res.render("urls_show", templateVars);
-  }else{
-    res.status(400);
-    res.send("URL can be only accesed by its authenticated creator");
   }
 });
 
