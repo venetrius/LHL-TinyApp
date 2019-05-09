@@ -96,7 +96,7 @@ app.get("/login", (req, res) => { // reviewed
 
 });
 
-app.get("/register", (req, res) => {
+app.get("/register", (req, res) => {  // reviewed
   if(users[req.session.user_id]){
     res.redirect("/urls");
   }else{
@@ -168,7 +168,7 @@ app.get("/u/:shortURL", (req, res) => {         //  reviewed
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", (req, res) => {            //  reviewed
   let user = getUserByEmail(req.body.email);
 
   if(user && bcrypt.compareSync(req.body.password, user.password)){
@@ -192,9 +192,13 @@ app.post("/register", (req,res) => {
     email : req.body.email,
     password :  bcrypt.hashSync(req.body.password,10)
   };
-  if(!newUser.email || !newUser.password || isEmailExist(newUser.email)){
+  if(!newUser.email || !req.body.password){
     res.status(400);
-    res.send('E-mail or password is not valid, or E-mail is already registrated');
+    res.send('<html><h1>E-mail or password is not valid</html></h1>');
+  }
+  else if(isEmailExist(newUser.email)){
+    res.status(400);
+    res.send('<html><h1>E-mail is already registrated</html></h1>');
   }else{
     users[newUser.id] = newUser;
     req.session.user_id = newUser.id;
