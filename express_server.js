@@ -85,6 +85,9 @@ app.get("/", (req, res) => {  // reviewed
 });
 
 app.get("/login", (req, res) => {
+  if(users[req.session.user_id]){
+    res.redirect("/urls");
+  }
   const templateVars = {
     user: users[req.session.user_id]
   };
