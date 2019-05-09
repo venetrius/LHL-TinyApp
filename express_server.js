@@ -84,21 +84,27 @@ app.get("/", (req, res) => {  // reviewed
   res.redirect("/login");
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", (req, res) => { // reviewed
   if(users[req.session.user_id]){
     res.redirect("/urls");
+  }else{
+    const templateVars = {
+      user: users[req.session.user_id]
+    };
+    res.render("login",templateVars);
   }
-  const templateVars = {
-    user: users[req.session.user_id]
-  };
-  res.render("login",templateVars);
+
 });
 
 app.get("/register", (req, res) => {
-  const templateVars = {
-    user: users[req.session.user_id]
-  };
-  res.render("register",templateVars);
+  if(users[req.session.user_id]){
+    res.redirect("/urls");
+  }else{
+    const templateVars = {
+      user: users[req.session.user_id]
+    };
+    res.render("register",templateVars);
+  }
 });
 
 app.get("/urls.json", (req, res) => {
