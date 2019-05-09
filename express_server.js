@@ -16,8 +16,8 @@ app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
 }));
-
-const AUTHENTICATION_ERROR = '<body><h1> 401 Authorization required </h1></body>';
+const LOGIN_OR_REGISTER = `<a href="/register"> Register </a> | <a href="/login"> Login </a>`
+const AUTHENTICATION_ERROR = `<body><h1> You need to be logged in for this funcionality </h1> ${LOGIN_OR_REGISTER}</body>`;
 const AUTHORIZATION_ERROR = '<body><h1> Error 403: </h1> The server understood the request, but is refusing to fulfil it. Authorization will not help and the request SHOULD NOT be repeated. </body>';
 const PAGE_NOT_FOUND = '<body><h1> 404, Page Not Found </h1></body>';
 
