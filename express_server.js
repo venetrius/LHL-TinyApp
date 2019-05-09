@@ -12,14 +12,9 @@ app.use(morgan('dev'));
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
-}))
+}));
 
-/*
-let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-
-};*/
+const AUTHENTICATION_ERROR = '<body><h1> 401 Unauthorized Error </h1></body>'
 
 let urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
@@ -80,7 +75,7 @@ const isAuthenticatedForURL = function(userID, urlId){ // Should be authorized
   return (user && url && user.id === url.userID);
 }
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {  // reviewed
   if(users[req.session.user_id]){
     res.redirect("/urls");
   }
@@ -105,9 +100,10 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/urls", (req, res) => {
-    if(! isValidUser(req.session.user_id)){
-    res.redirect("/login");
+app.get("/urls", (req, res) => {              // reviewed
+  if(! isValidUser(req.session.user_id)){
+    res.status = 400;
+    res.send(AUTHENTICATION_ERROR);
   }else{
     let templateVars = {
       urls: getURLByUserId(req.session.user_id),
