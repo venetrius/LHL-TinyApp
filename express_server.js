@@ -24,9 +24,16 @@ const AUTHORIZATION_ERROR = '<body><h1> Error 403: </h1> The server understood t
 const PAGE_NOT_FOUND = '<body><h1> 404, Page Not Found </h1></body>';
 
 let urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" },
-  "1234":   { longURL: "https://www.google.ca", userID: "123" }
+  b6UTxQ:   { longURL: "https://www.tsn.ca",
+              userID: "user2RandomID",
+              visited : 0,
+              created : new Date()
+            },
+  "1234":   { longURL: "https://www.google.ca",
+              userID: "123",
+              visited : 0,
+              created : new Date()
+            }
 };
 
 
@@ -75,7 +82,7 @@ const getURLByUserId = function(userID){
   for (let urlId in urlDatabase){
     let url = urlDatabase[urlId];
     if (url.userID === userID){
-      userURLs[urlId] = url.longURL;
+      userURLs[urlId] = url;
     }
   }
   return userURLs;
@@ -87,14 +94,14 @@ const isAuthorized = function(userID, urlId){
   return (user && url && user.id === url.userID);
 }
 
-app.get("/", (req, res) => {  // reviewed
+app.get("/", (req, res) => {
   if(users[req.session.user_id]){
     res.redirect("/urls");
   }
   res.redirect("/login");
 });
 
-app.get("/login", (req, res) => { // reviewed
+app.get("/login", (req, res) => {
   if(users[req.session.user_id]){
     res.redirect("/urls");
   }else{
@@ -106,7 +113,7 @@ app.get("/login", (req, res) => { // reviewed
 
 });
 
-app.get("/register", (req, res) => {  // reviewed
+app.get("/register", (req, res) => {
   if(users[req.session.user_id]){
     res.redirect("/urls");
   }else{
@@ -121,7 +128,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/urls", (req, res) => {              // reviewed
+app.get("/urls", (req, res) => {
   if(! users[req.session.user_id]){
     res.status = 400;
     res.send(AUTHENTICATION_ERROR);
@@ -134,7 +141,7 @@ app.get("/urls", (req, res) => {              // reviewed
   }
 });
 
-app.get("/urls/new", (req, res) => {        // reviewed
+app.get("/urls/new", (req, res) => {
   if(! users[req.session.user_id]){
     res.redirect("/login");
   }else{
@@ -145,7 +152,7 @@ app.get("/urls/new", (req, res) => {        // reviewed
   }
 });
 
-app.get("/urls/:shortURL", (req, res) => {  // reviewed
+app.get("/urls/:shortURL", (req, res) => {
   let user = users[req.session.user_id];
   let url = urlDatabase[req.params.shortURL];
   if(! user){
@@ -164,17 +171,18 @@ app.get("/urls/:shortURL", (req, res) => {  // reviewed
   }
 });
 
-app.get("/u/:shortURL", (req, res) => {         //  reviewed
+app.get("/u/:shortURL", (req, res) => {
   const url = urlDatabase[req.params.shortURL];
   if( !url){
     res.status(404);
     res.send(PAGE_NOT_FOUND);
   }else{
+    url.visited++;
     res.redirect(url.longURL);
   }
 });
 
-app.post("/login", (req, res) => {            //  reviewed
+app.post("/login", (req, res) => {
   let user = getUserByEmail(req.body.email);
 
   if(user && bcrypt.compareSync(req.body.password, user.password)){
@@ -186,12 +194,12 @@ app.post("/login", (req, res) => {            //  reviewed
   }
 });
 
-app.post("/logout", (req, res) => {     //  reviewed
+app.post("/logout", (req, res) => {
   req.session = null;
   res.redirect("/urls");
 });
 
-app.post("/register", (req,res) => {      //  reviewed
+app.post("/register", (req,res) => {
   let newUser = {
     id : generateRandomString(),
     email : req.body.email,
@@ -211,7 +219,7 @@ app.post("/register", (req,res) => {      //  reviewed
   }
 });
 
-app.delete("/urls/:shortURL", (req, res) => {//  reviewed
+app.delete("/urls/:shortURL", (req, res) => {
   if( ! users[req.session.user_id]){
     res.status = 401;
     res.send(AUTHENTICATION_ERROR);
@@ -224,8 +232,7 @@ app.delete("/urls/:shortURL", (req, res) => {//  reviewed
   }
 });
 
-app.put("/urls/:shortURL", (req, res) => { //  reviewed
-  console.log("I am calling PUT now");
+app.put("/urls/:shortURL", (req, res) => {
   if( ! users[req.session.user_id]){
     res.status = 401;
     res.send(AUTHENTICATION_ERROR);
@@ -235,11 +242,14 @@ app.put("/urls/:shortURL", (req, res) => { //  reviewed
   }
   urlDatabase[req.params.shortURL] = {
     longURL : req.body.longURL,
-    userID  : req.session.user_id};
+    userID  : req.session.user_id,
+    visited : 0,
+    created : new Date()
+  };
   res.redirect("/urls");
 });
 
-app.post("/urls", (req, res) => {         //  reviewed
+app.post("/urls", (req, res) => {
   if(! users[req.session.user_id]){
     res.status(401);
     res.send(AUTHENTICATION_ERROR);
@@ -247,7 +257,10 @@ app.post("/urls", (req, res) => {         //  reviewed
     const shortURL = generateRandomString();
     urlDatabase[shortURL] = {
       longURL : req.body.longURL,
-      userID  : req.session.user_id};
+      userID  : req.session.user_id,
+      visited : 0,
+      created : new Date()
+    };
     res.redirect("/urls/"+shortURL);
   }
 });

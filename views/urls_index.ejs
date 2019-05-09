@@ -16,11 +16,15 @@
       <li>
 
         <%= url %> ->
-        <a href="<%=urls[url]%>" > <%= urls[url] %> </a>
+        <a href="<%=urls[url]%>" > <%= urls[url].longURL %> </a>
         <a href= "/urls/<%=url%>" class="btn btn-primary" name="shortURL" >Edit</a>
         <form style="display: inline;" action="/urls/<%=url%>/?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-primary">Delete</button>
         </form>
+        <br/>
+        <b>created</b> <%=urls[url].created%>
+        <br/>
+        <b>visited</b> <%= urls[url].visited %> times
         <br/>
       </li>
     <% } %>
