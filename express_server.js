@@ -74,14 +74,17 @@ const getURLByUserId = function(userID){
   return userURLs;
 }
 
-const isAuthenticatedForURL = function(userID, urlId){
+const isAuthenticatedForURL = function(userID, urlId){ // Should be authorized
   let user = users[userID];
   let url = urlDatabase[urlId];
   return (user && url && user.id === url.userID);
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  if(users[req.session.user_id]){
+    res.redirect("/urls");
+  }
+  res.redirect("/login");
 });
 
 app.get("/login", (req, res) => {
@@ -190,7 +193,6 @@ app.post("/register", (req,res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  console.log("in delete");
   if( ! isAuthenticatedForURL(req.session.user_id, req.params.shortURL)){
     res.status(400);
     res.send("Access denied");
