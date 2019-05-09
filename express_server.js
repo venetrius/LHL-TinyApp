@@ -16,6 +16,7 @@ app.use(cookieSession({
 
 const AUTHENTICATION_ERROR = '<body><h1> 401 Authorization required </h1></body>';
 const AUTHORIZATION_ERROR = '<body><h1> Error 403: </h1> The server understood the request, but is refusing to fulfil it. Authorization will not help and the request SHOULD NOT be repeated. </body>';
+const PAGE_NOT_FOUND = '<body><h1> 404, Page Not Found </h1></body>';
 
 let urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
@@ -151,8 +152,8 @@ app.get("/urls/:shortURL", (req, res) => {  // reviewed
 app.get("/u/:shortURL", (req, res) => {
   const url = urlDatabase[req.params.shortURL];
   if( !url){
-    res.status(400);
-    res.send("Error 400");
+    res.status(404);
+    res.send(PAGE_NOT_FOUND);
   }else{
     res.redirect(url.longURL);
   }
