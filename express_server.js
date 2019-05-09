@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -28,17 +29,17 @@ let users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur",10)
   },
  "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk",10)
   },
   "123": {
     id: "123",
     email: "gergelygjuhasz@gmail.com",
-    password: "a"
+    password: bcrypt.hashSync("a",10)
   }
 }
 
@@ -154,7 +155,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/login", (req, res) => {
   let user = getUserByEmail(req.body.email);
   console.log(user);
-  if(user && user.password === req.body.password){
+  if(user && bcrypt.compareSync(req.body.password, user.password)){
     res.cookie("user_id", user.id);
     res.redirect("/urls");
   }else{
@@ -172,7 +173,7 @@ app.post("/register", (req,res) => {
   let newUser = {
     id : generateRandomString(),
     email : req.body.email,
-    password : req.body.password
+    password :  bcrypt.hashSync(req.body.password,10)
   };
   if(!newUser.email || !newUser.password || isEmailExist(newUser.email)){
     res.status(400);
