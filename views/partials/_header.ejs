@@ -3,7 +3,7 @@
   <a href="/register"> Register </a> | <a href="/login"> Login </a>
 <% } %>
 <%if (user) { %>
-    Logged in As: <b><%= user.email %><b>
+    Logged in As: <b><%= user.email %></b>
     <form  action="/logout" method="POST" class="form-inline">
       <button class="btn btn-primary" type="submit"> LogOut </button>
     </form>
