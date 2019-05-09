@@ -1,4 +1,4 @@
-// leting jsling know that the document uses ES6 
+// leting jsling know that the document uses ES6
 /*jslint es6 */
 "use strict";
 const express = require("express");
@@ -46,6 +46,7 @@ let users = {
   }
 }
 
+/* returns a 6 character long random Alphanumeric string */
 function generateRandomString() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomString = [];
@@ -56,10 +57,7 @@ function generateRandomString() {
   return randomString.join("");
 }
 
-const isEmailExist = function(email){
-  return getUserByEmail(email);
-}
-
+/* returns a user associated with a given email, if it does not exist return null */
 const getUserByEmail = function(email){
   for(let user in users){
     if( users[user].email===email){
@@ -67,10 +65,6 @@ const getUserByEmail = function(email){
     }
   }
   return null;
-}
-
-const isValidUser = function(userID){
-  return users[userID];
 }
 
 /* returns a list of URLs associated with the given userID */
@@ -126,7 +120,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {              // reviewed
-  if(! isValidUser(req.session.user_id)){
+  if(! users[req.session.user_id]){
     res.status = 400;
     res.send(AUTHENTICATION_ERROR);
   }else{
@@ -139,7 +133,7 @@ app.get("/urls", (req, res) => {              // reviewed
 });
 
 app.get("/urls/new", (req, res) => {        // reviewed
-  if(! isValidUser(req.session.user_id)){
+  if(! users[req.session.user_id]){
     res.redirect("/login");
   }else{
     const templateVars = {
@@ -205,7 +199,7 @@ app.post("/register", (req,res) => {      //  reviewed
     res.status(400);
     res.send('<html><h1>E-mail or password is not valid</html></h1>');
   }
-  else if(isEmailExist(newUser.email)){
+  else if(getUserByEmail(newUser.email)){
     res.status(400);
     res.send('<html><h1>E-mail is already registrated</html></h1>');
   }else{
@@ -215,17 +209,27 @@ app.post("/register", (req,res) => {      //  reviewed
   }
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
-  if( ! isAuthorized(req.session.user_id, req.params.shortURL)){
-    res.status(400);
-    res.send("Access denied");
+app.post("/urls/:shortURL/delete", (req, res) => {//  reviewed
+  if( ! users[req.session.user_id]){
+    res.status = 401;
+    res.send(AUTHENTICATION_ERROR);
+  }else if( ! isAuthorized(req.session.user_id, req.params.shortURL)){
+    res.status(403);
+    res.send(AUTHORIZATION_ERROR);
   }else{
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
   }
 });
 
-app.post("/urls/:shortURL", (req, res) => {
+app.post("/urls/:shortURL", (req, res) => { //  reviewed
+  if( ! users[req.session.user_id]){
+    res.status = 401;
+    res.send(AUTHENTICATION_ERROR);
+  }else if( ! isAuthorized(req.session.user_id, req.params.shortURL)){
+    res.status(403);
+    res.send(AUTHORIZATION_ERROR);
+  }
   urlDatabase[req.params.shortURL] = {
     longURL : req.body.longURL,
     userID  : req.session.user_id};
@@ -233,7 +237,7 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {         //  reviewed
-  if(! isValidUser(req.session.user_id)){
+  if(! users[req.session.user_id]){
     res.status(401);
     res.send(AUTHENTICATION_ERROR);
   }else{
