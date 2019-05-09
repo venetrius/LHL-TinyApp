@@ -1,3 +1,6 @@
+// leting jsling know that the document uses ES6 
+/*jslint es6 */
+"use strict";
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -21,7 +24,7 @@ const PAGE_NOT_FOUND = '<body><h1> 404, Page Not Found </h1></body>';
 let urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "user2RandomID" },
-  1234:   { longURL: "https://www.google.ca", userID: "123" }
+  "1234":   { longURL: "https://www.google.ca", userID: "123" }
 };
 
 
@@ -43,6 +46,16 @@ let users = {
   }
 }
 
+function generateRandomString() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomString = [];
+  for (let i = 0; i < 6; i++){
+   let randomNumber = Math.floor(Math.random() * characters.length);
+   randomString.push(characters[randomNumber]);
+  }
+  return randomString.join("");
+}
+
 const isEmailExist = function(email){
   return getUserByEmail(email);
 }
@@ -60,6 +73,7 @@ const isValidUser = function(userID){
   return users[userID];
 }
 
+/* returns a list of URLs associated with the given userID */
 const getURLByUserId = function(userID){
   let userURLs = {};
   for (let urlId in urlDatabase){
@@ -70,8 +84,8 @@ const getURLByUserId = function(userID){
   }
   return userURLs;
 }
-
-const isAuthenticatedForURL = function(userID, urlId){ // Should be authorized
+/* checks if a user with a given userID should have access to a URL defined by the urlID */
+const isAuthorized = function(userID, urlId){
   let user = users[userID];
   let url = urlDatabase[urlId];
   return (user && url && user.id === url.userID);
@@ -122,10 +136,6 @@ app.get("/urls", (req, res) => {              // reviewed
     };
     res.render("urls_index", templateVars);
   }
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 app.get("/urls/new", (req, res) => {        // reviewed
@@ -180,13 +190,12 @@ app.post("/login", (req, res) => {            //  reviewed
   }
 });
 
-app.post("/logout", (req, res) => {
-  //req.session.maxAge = new Date(5);
+app.post("/logout", (req, res) => {     //  reviewed
   req.session = null;
   res.redirect("/urls");
 });
 
-app.post("/register", (req,res) => {
+app.post("/register", (req,res) => {      //  reviewed
   let newUser = {
     id : generateRandomString(),
     email : req.body.email,
@@ -207,7 +216,7 @@ app.post("/register", (req,res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if( ! isAuthenticatedForURL(req.session.user_id, req.params.shortURL)){
+  if( ! isAuthorized(req.session.user_id, req.params.shortURL)){
     res.status(400);
     res.send("Access denied");
   }else{
@@ -240,13 +249,3 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-
-function generateRandomString() {
-     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-     let randomString = [];
-     for (let i = 0; i < 6; i++){
-      let randomNumber = Math.floor(Math.random() * characters.length);
-      randomString.push(characters[randomNumber]);
-     }
-     return randomString.join("");
-}
