@@ -149,7 +149,7 @@ app.get("/urls/:shortURL", (req, res) => {  // reviewed
   }
 });
 
-app.get("/u/:shortURL", (req, res) => {
+app.get("/u/:shortURL", (req, res) => {         //  reviewed
   const url = urlDatabase[req.params.shortURL];
   if( !url){
     res.status(404);
@@ -210,10 +210,10 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls");
 });
 
-app.post("/urls", (req, res) => {
+app.post("/urls", (req, res) => {         //  reviewed
   if(! isValidUser(req.session.user_id)){
     res.status(401);
-    res.send('<a href="/login"> please login</a>');
+    res.send(AUTHENTICATION_ERROR);
   }else{
     const shortURL = generateRandomString();
     urlDatabase[shortURL] = {
