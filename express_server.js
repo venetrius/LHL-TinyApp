@@ -27,12 +27,14 @@ let urlDatabase = {
   b6UTxQ:   { longURL: "https://www.tsn.ca",
               userID: "user2RandomID",
               visited : 0,
-              created : new Date()
+              created : new Date(),
+              visitors : []
             },
   "1234":   { longURL: "https://www.google.ca",
               userID: "123",
               visited : 0,
-              created : new Date()
+              created : new Date(),
+              visitors : []
             }
 };
 
@@ -92,6 +94,17 @@ const isAuthorized = function(userID, urlId){
   let user = users[userID];
   let url = urlDatabase[urlId];
   return (user && url && user.id === url.userID);
+}
+
+const initNewURL = function(shortURL, longURL, userID){
+  urlDatabase[shortURL] =
+  {
+    longURL : longURL,
+    userID  : userID,
+    visited : 0,
+    created : new Date(),
+    visitors : []
+  };
 }
 
 app.get("/", (req, res) => {
@@ -162,22 +175,33 @@ app.get("/urls/:shortURL", (req, res) => {
     res.status = 403;
     res.send(AUTHORIZATION_ERROR);
   }else{
+    let url = urlDatabase[req.params.shortURL];
     const templateVars = {
       shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL].longURL,
-      user: users[req.session.user_id]
+      longURL: url.longURL,
+      user: users[req.session.user_id],
+      created :  url.created,
+      visited : url.visited,
+      visitors : url.visitors
+
     };
+    console.log(templateVars);
     res.render("urls_show", templateVars);
   }
 });
 
 app.get("/u/:shortURL", (req, res) => {
+  console.log(req.connection.remoteAddress);
   const url = urlDatabase[req.params.shortURL];
   if( !url){
     res.status(404);
     res.send(PAGE_NOT_FOUND);
   }else{
     url.visited++;
+    if(! url.visitors.includes(req.connection.remoteAddress)){
+      url.visitors.push(req.connection.remoteAddress);
+    }
+    console.log(url.visitors);
     res.redirect(url.longURL);
   }
 });
@@ -239,14 +263,11 @@ app.put("/urls/:shortURL", (req, res) => {
   }else if( ! isAuthorized(req.session.user_id, req.params.shortURL)){
     res.status(403);
     res.send(AUTHORIZATION_ERROR);
+  }else{
+    initNewURL(req.params.shortURL, req.body.longURL, req.session.user_id);
+    res.redirect("/urls");
   }
-  urlDatabase[req.params.shortURL] = {
-    longURL : req.body.longURL,
-    userID  : req.session.user_id,
-    visited : 0,
-    created : new Date()
-  };
-  res.redirect("/urls");
+
 });
 
 app.post("/urls", (req, res) => {
@@ -255,12 +276,7 @@ app.post("/urls", (req, res) => {
     res.send(AUTHENTICATION_ERROR);
   }else{
     const shortURL = generateRandomString();
-    urlDatabase[shortURL] = {
-      longURL : req.body.longURL,
-      userID  : req.session.user_id,
-      visited : 0,
-      created : new Date()
-    };
+    initNewURL(shortURL, req.body.longURL, req.session.user_id);
     res.redirect("/urls/"+shortURL);
   }
 });

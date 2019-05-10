@@ -10,13 +10,26 @@
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header %>
   <h2> Show URL </h2>
-  Url: <b><%= longURL %> </b> and it's short form: <b> <%= shortURL %> <b/>
+  Url: <b>"<%=longURL%>" </b> and it's short form: <b> "<%=shortURL%>" <b/>
   <form class="form-inline" action=<%="/urls/" + shortURL+"/?_method=PUT" %> method="POST">
     <div class="form-group mb-2">
       <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
       <button type="submit" class="btn btn-primary">Update Long URL</button>
     </div>
   </form>
+  <b>created</b> <%=created%>
+  <br/>
+  <b>visited</b> <%= visited %> times by <%= visitors.length%> different visitors
+  <br/>
+  <% if(visitors.length > 0){ %>
+   <ul> <h3> visitors: </h3>
+    <% for(let visitor of  visitors ){%>
+      <li>
+        <%= visitor %>
+      </li>
+    <% } %>
+  </ul>
+  <% } %>
 
 
   <br/>

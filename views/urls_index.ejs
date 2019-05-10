@@ -16,7 +16,7 @@
       <li>
 
         <%= url %> ->
-        <a href="<%=urls[url]%>" > <%= urls[url].longURL %> </a>
+        <a href="<%=urls[url].longURL%>" > <%= urls[url].longURL %> </a>
         <a href= "/urls/<%=url%>" class="btn btn-primary" name="shortURL" >Edit</a>
         <form style="display: inline;" action="/urls/<%=url%>/?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-primary">Delete</button>
@@ -24,7 +24,7 @@
         <br/>
         <b>created</b> <%=urls[url].created%>
         <br/>
-        <b>visited</b> <%= urls[url].visited %> times
+        <b>visited</b> <%= urls[url].visited %> times by <%= urls[url].visitors.length %> different visitors
         <br/>
       </li>
     <% } %>
