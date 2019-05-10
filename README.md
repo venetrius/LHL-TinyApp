@@ -36,6 +36,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
             the site header
             a list of URLs the user has created, each list item containing:
             a link to "Create a New Short Link" which makes a GET request to /urls/new
+            the date the short URL was created
+            the number of times the short URL was visited
+            the number number of unique visits for the short URL
         if user is not logged in:
             returns 401
 
@@ -54,6 +57,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
             returns HTML with:
             the site header
             the short URL (for the given ID)
+            the date the short URL was created
+            the number of times the short URL was visited
+            the number of unique visits for the short URL
             a form which contains:
                 the corresponding long URL
                 an update button which makes a POST request to /urls/:id
