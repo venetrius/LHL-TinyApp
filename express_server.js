@@ -99,7 +99,7 @@ const isAuthorized = function(userID, urlId){
 const initNewURL = function(shortURL, longURL, userID){
   urlDatabase[shortURL] =
   {
-    longURL : longURL,
+    longURL : "https://" + longURL,
     userID  : userID,
     visited : 0,
     created : new Date(),

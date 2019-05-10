@@ -10,10 +10,11 @@
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header %>
   <h2> Show URL </h2>
-  Url: <b>"<%=longURL%>" </b> and it's short form: <b> "<%=shortURL%>" <b/>
+  <a href=<%="/u/"+shortURL%>> <%= shortURL %></a> ->
+  <a href="<%=longURL%>" > <%= longURL %> </a>
   <form class="form-inline" action=<%="/urls/" + shortURL+"/?_method=PUT" %> method="POST">
     <div class="form-group mb-2">
-      <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
+      http://<input class="form-control" type="text" name="longURL" placeholder="www..." style="width: 300px; margin: 1em">
       <button type="submit" class="btn btn-primary">Update Long URL</button>
     </div>
   </form>
@@ -33,7 +34,9 @@
 
 
   <br/>
-  <a href="/urls/new"> Create a New Short Link <a/>
+  <a href="/urls/new"> Create a New Short Link </a>
+  <br/>
+  <a href="/urls"> See your other URLs <a/>
 
 </body>
 </html>
